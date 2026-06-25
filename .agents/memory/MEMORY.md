@@ -1,0 +1,1 @@
+- [ML model server deployment target](deploy-ml-model-server.md) — TF/Keras servers must deploy as Reserved VM; Autoscale startup probe races TF import + model download and scale-to-zero kills the load.
