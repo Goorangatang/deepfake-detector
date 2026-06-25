@@ -239,6 +239,16 @@ function renderResult(data) {
   $("#valReal").textContent = `${pctReal}%`;
   $("#valAi").textContent = `${pctAi}%`;
 
+  const salBlock = $("#saliencyBlock");
+  const salImg = $("#saliencyImg");
+  if (data.saliency) {
+    salImg.src = data.saliency;
+    salBlock.hidden = false;
+  } else {
+    salImg.removeAttribute("src");
+    salBlock.hidden = true;
+  }
+
   let note;
   if (isAi) {
     note =

@@ -21,6 +21,7 @@ TrueSource AI is a web app that detects whether an image is real or AI-generated
 
 - `truesource/app.py` — Flask app: loads the model in a background thread, serves the UI and API.
 - `truesource/helpers.py` — model contract: preprocess to 128x128 RGB, normalize /255, single sigmoid = P(AI-Generated); label AI if prob >= 0.5. Classes: `["Real", "AI-Generated"]`.
+- `truesource/saliency.py` — builds a heatmap overlay (Grad-CAM on the last conv feature map, with input-gradient saliency as fallback) showing which regions drove the AI-Generated likelihood; returns a base64 PNG data URL. Warmed up at model load so the first real call is fast; `/predict` returns it as the `saliency` field and the verdict card renders it.
 - `truesource/model_setup.py`, `truesource/model_config.json`, `truesource/class_names.json` — model paths + HF Hub config.
 - `truesource/sample_images/` — 5 Real + 5 AI-Generated sample PNGs.
 - `truesource/static/app.js` — `BASE = window.location.pathname`; all API calls are relative so the app works behind the proxy path prefix.

@@ -45,6 +45,13 @@ def _load_model():
         import numpy as np
 
         model.predict(np.zeros((1, helpers.IMG_SIZE, helpers.IMG_SIZE, 3), dtype="float32"), verbose=0)
+        # Warm up the Grad-CAM graph too, so the first real saliency pass is fast.
+        try:
+            import saliency
+
+            saliency.saliency_overlay(model, Image.new("RGB", (helpers.IMG_SIZE, helpers.IMG_SIZE)))
+        except Exception:  # noqa: BLE001
+            traceback.print_exc()
         with _model_lock:
             _model = model
     except Exception as exc:  # noqa: BLE001
@@ -102,11 +109,20 @@ def _run_prediction(image: Image.Image):
     label, scores = helpers.predict(model, image, CLASS_NAMES)
     prob_ai = float(scores["AI-Generated"])
     prob_real = float(scores["Real"])
+    sal = None
+    try:
+        import saliency
+
+        sal = saliency.saliency_overlay(model, image)
+    except Exception:  # noqa: BLE001
+        traceback.print_exc()
+        sal = None
     return {
         "label": label,
         "prob_ai": prob_ai,
         "prob_real": prob_real,
         "confidence": max(prob_ai, prob_real),
+        "saliency": sal,
     }
 
 

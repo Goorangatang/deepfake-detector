@@ -198,6 +198,12 @@ h1, h2, .brand-name, .verdict-label { font-family: "Space Grotesk", sans-serif; 
 .fill-real { background: linear-gradient(90deg, #34d39e, var(--real)); }
 .fill-ai { background: linear-gradient(90deg, var(--ai), #ff8aab); }
 
+.saliency { margin-top: 22px; }
+.saliency-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.saliency-head span:first-child { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 0.95rem; }
+.saliency-sub { font-size: 0.72rem; color: var(--ink-soft); }
+.saliency img { width: 100%; border-radius: 14px; display: block; box-shadow: 0 10px 28px rgba(60,40,120,0.18); }
+
 .verdict-note { margin: 20px 0 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; padding: 14px 16px; background: rgba(138,108,255,0.07); border-radius: 12px; }
 
 /* ---------- Blocks (samples + tips) ---------- */
