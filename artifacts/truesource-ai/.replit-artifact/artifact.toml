@@ -20,7 +20,7 @@ run = "cd /home/runner/workspace/truesource && /home/runner/workspace/.pythonlib
 [services.production]
 
 [services.production.build]
-args = ["sh", "-c", "cd /home/runner/workspace/truesource && /home/runner/workspace/.pythonlibs/bin/python -c \"import json; cfg=json.load(open('model_config.json')); from huggingface_hub import hf_hub_download; [hf_hub_download(repo_id=cfg['hub_repo_id'], filename=f) for f in cfg['hub_files']]; print('Model pre-downloaded successfully')\""]
+args = ["sh", "-c", "/home/runner/workspace/.pythonlibs/bin/python -m pip install --quiet huggingface_hub && cd /home/runner/workspace/truesource && /home/runner/workspace/.pythonlibs/bin/python -c \"import json; cfg=json.load(open('model_config.json')); from huggingface_hub import hf_hub_download; print('Downloading model...'); [hf_hub_download(repo_id=cfg['hub_repo_id'], filename=f) for f in cfg['hub_files']]; print('Model pre-download complete.')\""]
 
 [services.production.run]
 args = ["sh", "-c", "cd /home/runner/workspace/truesource && /home/runner/workspace/.pythonlibs/bin/gunicorn --workers 1 --threads 8 --timeout 180 --bind 0.0.0.0:$PORT app:app"]
