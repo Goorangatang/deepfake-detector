@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrueSource AI — Real or AI?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/style.css" />
+</head>
+<body>
+  <div class="aurora">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l7 3v5c0 4.4-3 8.4-7 9.6C8 19.4 5 15.4 5 11V6l7-3z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">TrueSource<span class="brand-ai">AI</span></span>
+        <span class="brand-tag">image authenticity detector</span>
+      </div>
+    </div>
+    <div class="model-pill" id="modelPill">
+      <span class="dot"></span><span id="modelStatusText">Waking up the model…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="hero">
+      <h1>Is it <span class="hl-real">real</span> or <span class="hl-ai">AI</span>?</h1>
+      <p class="sub">Upload a photo or snap one with your camera. Our neural detector reads the pixels and tells you how confident it is — instantly.</p>
+    </section>
+
+    <div class="workspace">
+      <!-- LEFT: input -->
+      <section class="panel input-panel">
+        <div class="panel-head">
+          <h2>Your image</h2>
+          <div class="seg" role="tablist">
+            <button class="seg-btn active" data-mode="upload" role="tab">Upload</button>
+            <button class="seg-btn" data-mode="camera" role="tab">Camera</button>
+          </div>
+        </div>
+
+        <!-- Upload mode -->
+        <div class="mode mode-upload active" id="uploadMode">
+          <label class="dropzone" id="dropzone" tabindex="0">
+            <input type="file" id="fileInput" accept="image/*" hidden />
+            <div class="dz-inner">
+              <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>
+              </svg>
+              <p class="dz-title">Drop an image here</p>
+              <p class="dz-hint">or click to browse · PNG, JPG, WEBP</p>
+            </div>
+          </label>
+        </div>
+
+        <!-- Camera mode -->
+        <div class="mode mode-camera" id="cameraMode">
+          <div class="camera-stage">
+            <video id="video" autoplay playsinline></video>
+            <div class="camera-empty" id="cameraEmpty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                <circle cx="12" cy="13" r="3"/>
+              </svg>
+              <p>Camera is off</p>
+            </div>
+          </div>
+          <div class="camera-controls">
+            <button class="btn ghost" id="startCam">Start camera</button>
+            <button class="btn primary" id="snap" disabled>Capture photo</button>
+          </div>
+        </div>
+
+        <div class="preview-row" id="previewRow" hidden>
+          <img id="previewImg" alt="Selected preview" />
+          <div class="preview-meta">
+            <span id="previewLabel">Ready to analyze</span>
+            <button class="btn primary full" id="analyzeBtn">Analyze image</button>
+            <button class="btn link" id="clearBtn">Choose a different one</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: result -->
+      <section class="panel result-panel">
+        <div class="panel-head"><h2>Verdict</h2></div>
+
+        <div class="result-empty" id="resultEmpty">
+          <div class="scan-ring"><span></span><span></span><span></span></div>
+          <p>Pick an image and hit analyze.<br/>Your result appears here.</p>
+        </div>
+
+        <div class="result-loading" id="resultLoading" hidden>
+          <div class="scanner"></div>
+          <p>Reading the pixels…</p>
+        </div>
+
+        <div class="result-card" id="resultCard" hidden>
+          <div class="verdict" id="verdictBadge">
+            <span class="verdict-label" id="verdictLabel">Real</span>
+            <span class="verdict-conf" id="verdictConf">0%</span>
+          </div>
+
+          <div class="bar-block">
+            <div class="bar-legend">
+              <span class="leg leg-real">Real</span>
+              <span class="leg leg-ai">AI-Generated</span>
+            </div>
+            <div class="dual-bar">
+              <div class="fill fill-real" id="fillReal"></div>
+              <div class="fill fill-ai" id="fillAi"></div>
+            </div>
+            <div class="bar-values">
+              <span id="valReal">0%</span>
+              <span id="valAi">0%</span>
+            </div>
+          </div>
+
+          <p class="verdict-note" id="verdictNote"></p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Samples -->
+    <section class="block">
+      <div class="block-head">
+        <h2>Try a sample</h2>
+        <p>These come straight from the model's own dataset — perfect for a quick test.</p>
+      </div>
+      <div class="samples" id="samples"></div>
+    </section>
+
+    <!-- Tips -->
+    <section class="block">
+      <div class="block-head">
+        <h2>Spot the fakes yourself</h2>
+        <p>Trained eyes catch what models miss. Watch for these tells.</p>
+      </div>
+      <div class="tips" id="tips"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>TrueSource AI · predictions are probabilistic — use judgment alongside the model.</span>
+  </footer>
+
+  <canvas id="snapCanvas" hidden></canvas>
+  <script src="static/app.js"></script>
+</body>
+</html>

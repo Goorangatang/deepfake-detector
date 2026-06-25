@@ -1,0 +1,33 @@
+kind = "web"
+previewPath = "/"
+title = "TrueSource AI"
+version = "1.0.0"
+id = "artifacts/truesource-ai"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18359
+
+[services.development]
+run = "cd /home/runner/workspace/truesource && /home/runner/workspace/.pythonlibs/bin/gunicorn --workers 1 --threads 8 --timeout 180 --bind 0.0.0.0:$PORT app:app"
+
+[services.production]
+
+[services.production.run]
+args = ["sh", "-c", "cd /home/runner/workspace/truesource && /home/runner/workspace/.pythonlibs/bin/gunicorn --workers 1 --threads 8 --timeout 180 --bind 0.0.0.0:$PORT app:app"]
+
+[services.production.run.env]
+PORT = "18359"
+
+[services.production.health.startup]
+path = "/healthz"
+
+[services.env]
+PORT = "18359"
+BASE_PATH = "/"
