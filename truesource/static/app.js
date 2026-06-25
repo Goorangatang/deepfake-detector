@@ -170,6 +170,13 @@ async function analyze() {
   $("#resultCard").hidden = true;
   $("#resultLoading").hidden = false;
 
+  // Keep the scanning animation visible for at least 2s after clicking, then drop it.
+  const started = Date.now();
+  const settle = async () => {
+    const elapsed = Date.now() - started;
+    if (elapsed < 2000) await new Promise((r) => setTimeout(r, 2000 - elapsed));
+  };
+
   try {
     let res;
     if (currentSample) {
@@ -184,6 +191,7 @@ async function analyze() {
       res = await fetch(api("/predict"), { method: "POST", body: fd });
     }
     const data = await res.json();
+    await settle();
     if (!res.ok) {
       if (data.error === "model_loading") {
         toast("Model still loading — try again in a few seconds.");
@@ -202,6 +210,7 @@ async function analyze() {
     }
     renderResult(data);
   } catch (e) {
+    await settle();
     toast("Network error — please try again.");
     resetResult();
   }
