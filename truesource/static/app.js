@@ -170,28 +170,23 @@ async function analyze() {
   $("#resultCard").hidden = true;
   $("#resultLoading").hidden = false;
 
-  // Keep the scanning animation visible for at least 2s after clicking, then drop it.
-  const started = Date.now();
-  const settle = async () => {
-    const elapsed = Date.now() - started;
-    if (elapsed < 2000) await new Promise((r) => setTimeout(r, 2000 - elapsed));
-  };
-
-  try {
-    let res;
-    if (currentSample) {
-      res = await fetch(api("/predict"), {
+  // Show the "Reading the pixels…" animation for a fixed 2s after clicking, then remove it.
+  const timer = new Promise((r) => setTimeout(r, 2000));
+  const request = currentSample
+    ? fetch(api("/predict"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sample: currentSample }),
-      });
-    } else {
-      const fd = new FormData();
-      fd.append("file", currentBlob, "upload.png");
-      res = await fetch(api("/predict"), { method: "POST", body: fd });
-    }
+      })
+    : (() => {
+        const fd = new FormData();
+        fd.append("file", currentBlob, "upload.png");
+        return fetch(api("/predict"), { method: "POST", body: fd });
+      })();
+
+  try {
+    const [res] = await Promise.all([request, timer]);
     const data = await res.json();
-    await settle();
     if (!res.ok) {
       if (data.error === "model_loading") {
         toast("Model still loading — try again in a few seconds.");
@@ -210,7 +205,6 @@ async function analyze() {
     }
     renderResult(data);
   } catch (e) {
-    await settle();
     toast("Network error — please try again.");
     resetResult();
   }
