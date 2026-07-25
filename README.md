@@ -19,11 +19,9 @@ The goal of this project was to explore computer vision, deep learning, and the 
 
 ## 📊 Model Performance
 
-(Add your actual numbers)
-
-- Training Accuracy: XX%
-- Validation Accuracy: XX%
-- Dataset Size: XXXX images
+- Training Accuracy: 83%
+- Validation Accuracy: 76%
+- Dataset Size: 3000 images
 
 ## ⚙️ Technologies Used
 
@@ -33,6 +31,10 @@ The goal of this project was to explore computer vision, deep learning, and the 
 - NumPy
 - Machine Learning
 - Computer Vision
+
+## Testing
+
+https://true-source-ai-1.replit.app/
 
 ## 💻 Installation
 
